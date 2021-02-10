@@ -1,0 +1,38 @@
+- name: Install packages
+  apt: name={{ item }} state=present
+  with_items:
+  - nano
+  - vim
+  - git
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+
+
+- name: Add and configure management user
+  shell: |
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+    sudo apt update
+    apt-cache policy docker-ce
+
+- name: Install packages
+  apt: name={{ item }} state=present
+  with_items:
+  - docker-ce
+
+- name: install KinD
+  shell: |
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
+    chmod +x ./kind
+    mv ./kind /usr/local/bin/kind
+
+
+- name: install kubectl , kubectx and kubens
+  shell: |
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    git clone https://github.com/ahmetb/kubectx /opt/kubectx
+    ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
+    ln -s /opt/kubectx/kubens /usr/local/bin/kubens
