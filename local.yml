@@ -5,7 +5,4 @@
   become: true
   connection: local
   roles:
-    - ansible-role-java
-    - ansible-role-jenkins
-
-
+    - ansible-role-k8s-tools
